@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.eventlink.mapper.LoginMapper">
+    <insert id="insert">
+        INSERT INTO users (
+        username,
+        email,
+        phone,
+        password,
+        avatar_url,
+        role,
+        school_name,
+        class_name,
+        major,
+        status
+        ) VALUES (
+        'JohnDoe',                          -- 用户名
+        'johndoe@example.com',              -- 邮箱
+        '12345678901',                      -- 手机号
+        '$2a$10$eImGfMw7ay3fhWG3cLpnsuTlBztdSF6hFtTiQtEIQErpyME2l5mFG', -- 加密后的密码
+        'https://example.com/avatar/john',  -- 头像 URL
+        0,                                  -- 用户角色：0 表示 student
+        'Springfield University',           -- 学校
+        'CS2024',                           -- 班级
+        'Computer Science',                 -- 专业
+        1                                   -- 用户状态：1 表示启用
+        )
+    </insert>
+
+</mapper>
