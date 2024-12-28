@@ -1,9 +1,11 @@
-package com.example.eventlink;
+package com.eventlink;
 
-import com.example.eventlink.mapper.LoginMapper;
+import com.eventlink.mapper.LoginMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
 
 @SpringBootTest
 class EventLinkApplicationTests {
@@ -12,6 +14,7 @@ class EventLinkApplicationTests {
     @Test
     public void testMybatis() {
         loginMapper.insert();
+        ArrayList<Integer> list = new ArrayList<>();
     }
 
 }

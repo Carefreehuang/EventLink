@@ -1,4 +1,4 @@
-package com.example.eventlink.mapper;
+package com.eventlink.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 

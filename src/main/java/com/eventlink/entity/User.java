@@ -1,4 +1,4 @@
-package com.example.eventlink.entity;
+package com.eventlink.entity;
 
 import lombok.Data;
 
