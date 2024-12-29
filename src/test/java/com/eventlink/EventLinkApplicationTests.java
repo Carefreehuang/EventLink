@@ -1,5 +1,6 @@
 package com.eventlink;
 
+import com.eventlink.entity.User;
 import com.eventlink.mapper.LoginMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,11 @@ class EventLinkApplicationTests {
     LoginMapper loginMapper;
     @Test
     public void testMybatis() {
-        loginMapper.insert();
-        ArrayList<Integer> list = new ArrayList<>();
+        User user = new User();
+        user.setUsername("test");
+        user.setPassword("123456");
+        user.setEmail("2380520989@qq.com");
+        loginMapper.insert(user);
     }
 
 }
