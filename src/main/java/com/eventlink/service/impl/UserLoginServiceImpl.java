@@ -6,7 +6,6 @@ import com.eventlink.entity.User;
 import com.eventlink.mapper.LoginMapper;
 import com.eventlink.result.Result;
 import com.eventlink.service.UserLoginService;
-import lombok.val;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
