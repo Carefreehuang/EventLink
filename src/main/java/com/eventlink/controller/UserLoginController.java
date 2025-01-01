@@ -3,6 +3,7 @@ package com.eventlink.controller;
 import com.eventlink.dto.req.LoginReqDTO;
 import com.eventlink.dto.req.RegisterReqDTO;
 import com.eventlink.dto.req.UpdateUserReqDTO;
+import com.eventlink.dto.resp.LoginRespDTO;
 import com.eventlink.result.Result;
 import com.eventlink.service.UserLoginService;
 import jakarta.annotation.Resource;
@@ -23,7 +24,7 @@ public class UserLoginController {
     }
 
     @PostMapping("/login")
-    public Result<String> login(@RequestBody LoginReqDTO loginReqDTO) {
+    public Result<LoginRespDTO> login(@RequestBody LoginReqDTO loginReqDTO) {
         return userLoginService.login(loginReqDTO);
     }
 

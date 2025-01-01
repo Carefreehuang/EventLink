@@ -6,6 +6,7 @@ import com.eventlink.common.Constants;
 import com.eventlink.dto.req.LoginReqDTO;
 import com.eventlink.dto.req.RegisterReqDTO;
 import com.eventlink.dto.req.UpdateUserReqDTO;
+import com.eventlink.dto.resp.LoginRespDTO;
 import com.eventlink.entity.User;
 import com.eventlink.mapper.UserMapper;
 import com.eventlink.result.Result;
@@ -60,7 +61,7 @@ public class UserLoginServiceImpl implements UserLoginService {
     }
 
     @Override
-    public Result<String> login(LoginReqDTO loginReqDTO) {
+    public Result<LoginRespDTO> login(LoginReqDTO loginReqDTO) {
         if (loginReqDTO == null) {
             return Result.error("参数不能为空");
         }
@@ -91,7 +92,11 @@ public class UserLoginServiceImpl implements UserLoginService {
         stringRedisTemplate.opsForHash().putAll(tokenKey, userMap);
         stringRedisTemplate.expire(tokenKey, Constants.USER_LOGIN_TTL, TimeUnit.SECONDS);
 
-        return Result.success("登录成功", token);
+        LoginRespDTO loginRespDTO = new LoginRespDTO();
+        BeanUtil.copyProperties(user, loginRespDTO);
+        loginRespDTO.setToken(token);
+
+        return Result.success("登录成功", loginRespDTO);
     }
 
     @Override
