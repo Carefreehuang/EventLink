@@ -11,4 +11,6 @@ public interface UserLoginService {
     Result<String> register(RegisterReqDTO registerReqDTO);
 
     Result<String> login(LoginReqDTO loginReqDTO);
+
+    Result<String> logout(String token);
 }

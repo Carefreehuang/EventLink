@@ -1,14 +1,25 @@
 package com.eventlink.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
+import com.eventlink.common.Constants;
 import com.eventlink.dto.req.LoginReqDTO;
 import com.eventlink.dto.req.RegisterReqDTO;
 import com.eventlink.entity.User;
 import com.eventlink.mapper.LoginMapper;
 import com.eventlink.result.Result;
 import com.eventlink.service.UserLoginService;
+import com.eventlink.utils.UserHolder;
+import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserLoginServiceImpl implements UserLoginService {
@@ -16,6 +27,9 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     @Autowired
     private LoginMapper loginMapper;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Boolean hasUsername(String username) {
@@ -60,6 +74,29 @@ public class UserLoginServiceImpl implements UserLoginService {
         if (user == null || !loginReqDTO.getPassword().equals(user.getPassword())) {
             return Result.error("密码错误");
         }
-        return Result.success("登录成功");
+        // 登录成功，生成一个token，存入redis，返回前端
+        String token = UUID.randomUUID().toString();
+        String tokenKey = Constants.USER_LOGIN_KEY + token;
+        // 忽略空值，字段转字符串，hutool的忽略空值好像有bug，所以这里手动处理
+        Map<String, Object> userMap = BeanUtil.beanToMap(user,new HashMap<>(),
+                CopyOptions.create()
+                        .setIgnoreNullValue(true)
+                        .setFieldValueEditor((fieldName,fieldValue) -> {
+                            if (fieldValue != null) {
+                                return fieldValue.toString();
+                            }
+                            return "";
+                        }));
+        stringRedisTemplate.opsForHash().putAll(tokenKey, userMap);
+        stringRedisTemplate.expire(tokenKey, Constants.USER_LOGIN_TTL, TimeUnit.SECONDS);
+
+        return Result.success("登录成功", token);
+    }
+
+    @Override
+    public Result<String> logout(String token) {
+        UserHolder.removeUser();
+        stringRedisTemplate.delete(Constants.USER_LOGIN_KEY + token);
+        return Result.success("登出成功",null);
     }
 }
