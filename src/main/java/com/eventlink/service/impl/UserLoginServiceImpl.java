@@ -106,6 +106,9 @@ public class UserLoginServiceImpl implements UserLoginService {
         if (id == null) {
             return Result.error("id不能为空");
         }
+        if (!id.equals(UserHolder.getUser().getId())) {
+            return Result.error("无权限");
+        }
         if (updateUserReqDTO == null) {
             return Result.error("参数不能为空");
         }

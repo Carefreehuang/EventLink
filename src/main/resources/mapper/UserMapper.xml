@@ -15,13 +15,13 @@
     <update id="updateById" parameterType="com.eventlink.dto.req.UpdateUserReqDTO">
         update users
         <set>
-            <if test="email != null">email = #{email},</if>
-            <if test="phone != null">phone = #{phone},</if>
-            <if test="role != null">role = #{role},</if>
-            <if test="schoolName != null">school_name = #{schoolName},</if>
-            <if test="className != null">class_name = #{className},</if>
-            <if test="major != null">major = #{major},</if>
-            <if test="avatarUrl != null">avatar_url = #{avatarUrl},</if>
+            <if test="data.email != null">email = #{data.email},</if>
+            <if test="data.phone != null">phone = #{data.phone},</if>
+            <if test="data.role != null">role = #{data.role},</if>
+            <if test="data.schoolName != null">school_name = #{data.schoolName},</if>
+            <if test="data.className != null">class_name = #{data.className},</if>
+            <if test="data.major != null">major = #{data.major},</if>
+            <if test="data.avatarUrl != null">avatar_url = #{data.avatarUrl},</if>
             updated_time = now()
         </set>
         where id = #{id}
