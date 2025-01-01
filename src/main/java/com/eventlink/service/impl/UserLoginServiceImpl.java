@@ -5,8 +5,9 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.eventlink.common.Constants;
 import com.eventlink.dto.req.LoginReqDTO;
 import com.eventlink.dto.req.RegisterReqDTO;
+import com.eventlink.dto.req.UpdateUserReqDTO;
 import com.eventlink.entity.User;
-import com.eventlink.mapper.LoginMapper;
+import com.eventlink.mapper.UserMapper;
 import com.eventlink.result.Result;
 import com.eventlink.service.UserLoginService;
 import com.eventlink.utils.UserHolder;
@@ -26,14 +27,14 @@ public class UserLoginServiceImpl implements UserLoginService {
     private static final int ENABLE_STATUS = 1;
 
     @Autowired
-    private LoginMapper loginMapper;
+    private UserMapper userMapper;
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Boolean hasUsername(String username) {
-        User user = loginMapper.findByUsername(username);
+        User user = userMapper.findByUsername(username);
         return user != null;
     }
 
@@ -54,7 +55,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         User insertUser = new User();
         BeanUtils.copyProperties(registerReqDTO, insertUser);
         insertUser.setStatus(ENABLE_STATUS);
-        loginMapper.insert(insertUser);
+        userMapper.insert(insertUser);
         return Result.success("注册成功");
     }
 
@@ -69,7 +70,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         if (loginReqDTO.getPassword() == null) {
             return Result.error("密码不能为空");
         }
-        User user = loginMapper.findByUsername(loginReqDTO.getUsername());
+        User user = userMapper.findByUsername(loginReqDTO.getUsername());
 
         if (user == null || !loginReqDTO.getPassword().equals(user.getPassword())) {
             return Result.error("密码错误");
@@ -98,5 +99,21 @@ public class UserLoginServiceImpl implements UserLoginService {
         UserHolder.removeUser();
         stringRedisTemplate.delete(Constants.USER_LOGIN_KEY + token);
         return Result.success("登出成功",null);
+    }
+
+    @Override
+    public Result<Long> updateUserInfo(Long id, UpdateUserReqDTO updateUserReqDTO) {
+        if (id == null) {
+            return Result.error("id不能为空");
+        }
+        if (updateUserReqDTO == null) {
+            return Result.error("参数不能为空");
+        }
+        int result = userMapper.updateById(id, updateUserReqDTO);
+        if (result > 0) {
+            return Result.success("更新成功", id);
+        } else {
+            return Result.error("更新失败");
+        }
     }
 }

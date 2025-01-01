@@ -2,6 +2,7 @@ package com.eventlink.controller;
 
 import com.eventlink.dto.req.LoginReqDTO;
 import com.eventlink.dto.req.RegisterReqDTO;
+import com.eventlink.dto.req.UpdateUserReqDTO;
 import com.eventlink.result.Result;
 import com.eventlink.service.UserLoginService;
 import jakarta.annotation.Resource;
@@ -38,5 +39,10 @@ public class UserLoginController {
 //        // 去掉"Bearer "前缀
 //        String token = authHeader.substring(7);
         return userLoginService.logout(authHeader);
+    }
+
+    @PostMapping("/update/{id}")
+    public Result<Long> updateUserInfo(@PathVariable Long id, @RequestBody UpdateUserReqDTO updateUserReqDTO) {
+        return userLoginService.updateUserInfo(id, updateUserReqDTO);
     }
 }
