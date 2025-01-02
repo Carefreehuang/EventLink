@@ -111,11 +111,20 @@ public class UserLoginServiceImpl implements UserLoginService {
         if (id == null) {
             return Result.error("id不能为空");
         }
-        if (!id.equals(UserHolder.getUser().getId())) {
+        if (UserHolder.getUser() == null || !id.equals(UserHolder.getUser().getId())) {
             return Result.error("无权限");
         }
         if (updateUserReqDTO == null) {
             return Result.error("参数不能为空");
+        }
+
+        if (updateUserReqDTO.getUsername() == null) {
+            return Result.error("用户名不能为空");
+        }
+        // 用户名发生变化，检查是否重复
+        String username = userMapper.getUsernameById(id);
+        if (!updateUserReqDTO.getUsername().equals(username) && hasUsername(updateUserReqDTO.getUsername())) {
+            return Result.error("用户名已存在");
         }
         int result = userMapper.updateById(id, updateUserReqDTO);
         if (result > 0) {
@@ -123,5 +132,19 @@ public class UserLoginServiceImpl implements UserLoginService {
         } else {
             return Result.error("更新失败");
         }
+    }
+
+    @Override
+    public Result<LoginRespDTO> getUserInfo(Long id) {
+        if (id == null) {
+            return Result.error("id不能为空");
+        }
+        User user = userMapper.findById(id);
+        if (user == null) {
+            return Result.error("用户不存在");
+        }
+        LoginRespDTO loginRespDTO = new LoginRespDTO();
+        BeanUtil.copyProperties(user, loginRespDTO);
+        return Result.success("查询成功", loginRespDTO);
     }
 }

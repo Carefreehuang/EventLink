@@ -33,16 +33,21 @@ public class UserLoginController {
         if (authHeader == null) {
             return Result.error("请先登录");
         }
-//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//            return Result.error("请先登录");
-//        }
-//        // 去掉"Bearer "前缀
-//        String token = authHeader.substring(7);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return Result.error("请先登录");
+        }
+        // 去掉"Bearer "前缀
+        String token = authHeader.substring(7);
         return userLoginService.logout(authHeader);
     }
 
     @PostMapping("/update/{id}")
     public Result<Long> updateUserInfo(@PathVariable Long id, @RequestBody UpdateUserReqDTO updateUserReqDTO) {
         return userLoginService.updateUserInfo(id, updateUserReqDTO);
+    }
+
+    @GetMapping("/{id}")
+    public Result<LoginRespDTO> getUserInfo(@PathVariable Long id) {
+        return userLoginService.getUserInfo(id);
     }
 }

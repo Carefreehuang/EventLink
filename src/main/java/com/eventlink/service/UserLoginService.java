@@ -17,4 +17,6 @@ public interface UserLoginService {
     Result<String> logout(String token);
 
     Result<Long> updateUserInfo(Long id, UpdateUserReqDTO updateUserReqDTO);
+
+    Result<LoginRespDTO> getUserInfo(Long id);
 }

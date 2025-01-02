@@ -11,6 +11,15 @@
     <select id="findByUsername" resultType="com.eventlink.entity.User">
         select * from users where username = #{username}
     </select>
+    <select id="findById" resultType="com.eventlink.entity.User">
+        select id, username, email, phone, role, school_name, class_name, major
+            from users
+        where id = #{id}
+    </select>
+
+    <select id="getUsernameById" resultType="java.lang.String">
+        select username from users where id = #{id}
+    </select>
 
     <update id="updateById" parameterType="com.eventlink.dto.req.UpdateUserReqDTO">
         update users
