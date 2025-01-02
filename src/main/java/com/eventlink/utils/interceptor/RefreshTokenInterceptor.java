@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.eventlink.common.Constants;
 import com.eventlink.entity.User;
+import com.eventlink.result.Result;
 import com.eventlink.utils.UserHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,13 +25,21 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        //获取请求头之中的token
-        String token = request.getHeader("authorization");
-
-        // 如果没有token，直接放行
-        if(StrUtil.isBlank(token)){
+        // 解决复杂请求的预验请求问题
+        if (request.getMethod().equals("OPTIONS")){
             return true;
         }
+
+        //获取请求头之中的token
+        String rawToken = request.getHeader("Authorization");
+
+        // 如果没有token或者格式不对，直接放行，因为我只要刷新
+        if(StrUtil.isBlank(rawToken) || !rawToken.startsWith("Bearer ")){
+            return true;
+        }
+
+        // 去掉"Bearer "前缀
+        String token = rawToken.substring(7);
 
         String key = Constants.USER_LOGIN_KEY + token;
         //基于token获取redis中的用户（get是根据key以及字段取值，entries是根据key取值）
